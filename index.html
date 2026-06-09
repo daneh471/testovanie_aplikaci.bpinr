@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="BP & INR" />
   <title>BP & INR</title>
-  <link rel="manifest" href="manifest.json?v=3.8" />
+  <link rel="manifest" href="manifest.json?v=4.0" />
   <link rel="icon" href="favicon.png" />
   <link rel="apple-touch-icon" href="favicon.png" />
   <style>
@@ -104,6 +104,14 @@
     body.bp-only .archive-header, body.bp-only .record-row { grid-template-columns: 35% 15% 15% 15% 20%; }
     body.bp-only .col-inr, body.bp-only .col-tab { display: none; }
 
+    /* Tlačové štýly pre PDF export */
+    @media print {
+      body * { visibility: hidden; }
+      #monthDetailContent, #monthDetailContent * { visibility: visible; }
+      #monthDetailContent { position: absolute; left: 0; top: 0; width: 100%; }
+      .record-row div:last-child { display: none; } /* Skryť ikonu koša */
+    }
+
     .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; padding: 1rem; }
     .modal-content { background-color: var(--card); padding: 1rem; border-radius: 1.5rem; width: 100%; max-width: 380px; max-height: 98dvh; overflow: hidden; display: flex; flex-direction: column; text-align: left; box-sizing: border-box; }
     #infoModal .modal-content { justify-content: center; gap: 0.2rem; }
@@ -179,6 +187,15 @@
       <div id="archivList" class="record-list"></div>
     </div>
 
+    <div id="monthDetailModal" class="modal" style="background: var(--bg);"><div class="modal-content" style="max-width: 100%; width: 100%; height: 100%; border-radius: 0; padding: 1rem; overflow-y: auto;">
+      <h2 id="monthDetailTitle" style="margin-top: env(safe-area-inset-top);"></h2>
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+        <button class="main" id="btn_pdf" onclick="window.exportToPDF()" style="background-color: #f39c12; flex: 1;">PDF Export</button>
+        <button class="main" id="btn_close_month" onclick="window.zavrietMesacnyDetail()" style="background-color: #777; flex: 1;">Zatvoriť</button>
+      </div>
+      <div id="monthDetailContent" class="record-list"></div>
+    </div></div>
+
     <div id="manualModal" class="modal"><div class="modal-content">
       <h3>Manuálny záznam</h3>
       <div class="modal-form-grid">
@@ -234,7 +251,7 @@
     </div></div>
 
     <div id="toast" style="display:none; position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background-color: #333; color: #fff; padding: 0.8rem 1.2rem; border-radius: 0.5rem; z-index: 1000;"></div>
-    <div style="position: fixed; bottom: 0.3rem; left: 0.5rem; font-size: 0.65rem; opacity: 0.4; pointer-events: none; z-index: 999;">v3.8</div>
+    <div style="position: fixed; bottom: 0.3rem; left: 0.5rem; font-size: 0.65rem; opacity: 0.4; pointer-events: none; z-index: 999;">v4.0</div>
   </div>
 
   <script type="module">
@@ -262,9 +279,11 @@
         menuSettings: "⚙️ Nastavenia", menuLogout: "🚪 Odhlásiť sa", addBtn: "Pridať záznam", backBtn: "Späť na formulár", saveBtn: "Uložiť", 
         closeBtn: "Zatvoriť", titleArchive: "Archív záznamov", titleManual: "Manuálny záznam", titleInfo: "Informácie o hodnotách", titleSettings: "Nastavenia",
         menuLang: "Jazyk", selectLang: "Vybrať jazyk", menuToggleBp: "Prepnúť na: Iba Tlak", menuToggleFull: "Prepnúť na: INR + Tlak", userPrefix: "Používateľ",
-        infoTab: "Tabletka (počet tabletiek)", infoLow: "Nízky", infoNorm: "Normálny", infoHigh: "Vysoký",
+        infoTab: "Tabletka (počet tabletiek)", infoLow: "Nízky", infoNorm: "Normálny", infoHigh: "Vysoký", btnExportPdf: "Exportovať PDF",
         saved: "Uložené", msgOccupied: "Meno je už obsadené.", msgUserNotFound: "Užívateľ neexistuje.", msgWrongPin: "Nesprávny PIN kód.",
-        confirmDel: "Naozaj chcete vymazať tento záznam?", confirmLogout: "Ste si istý, že sa chcete odhlásiť?", updateReady: "Aktualizácia (v3.5) je pripravená.",
+        confirmDel: "Naozaj chcete vymazať tento záznam?", confirmLogout: "Ste si istý, že sa chcete odhlásiť?", 
+        updateReady: "Nová verzia (v4.0) je pripravená:",
+        updateChanges: "• Režim Iba Tlak\n• Mesačný archív\n• PDF Export\n• Meno v archíve",
         btnMonthlyArchive: "Mesačný archív"
       },
       de: {
@@ -273,9 +292,11 @@
         menuSettings: "⚙️ Einstellungen", menuLogout: "🚪 Abmelden", addBtn: "Eintrag hinzufügen", backBtn: "Zurück zum Formular", saveBtn: "Speichern", 
         closeBtn: "Schließen", titleArchive: "Eintragshistorie", titleManual: "Manueller Eintrag", titleInfo: "Informationen zu Werten", titleSettings: "Einstellungen",
         menuLang: "Sprache", selectLang: "Sprache wählen", menuToggleBp: "Nur Blutdruck", menuToggleFull: "INR + Blutdruck", userPrefix: "Benutzer",
-        infoTab: "Tablette (Anzahl der Tabletten)", infoLow: "Niedrig", infoNorm: "Normal", infoHigh: "Hoch",
+        infoTab: "Tablette (Anzahl der Tabletten)", infoLow: "Niedrig", infoNorm: "Normal", infoHigh: "Hoch", btnExportPdf: "PDF Exportieren",
         saved: "Gespeichert", msgOccupied: "Name bereits vergeben.", msgUserNotFound: "Benutzer existiert nicht.", msgWrongPin: "Falscher PIN-Code.",
-        confirmDel: "Diesen Eintrag wirklich löschen?", confirmLogout: "Möchten Sie sich wirklich abmelden?", updateReady: "Update (v3.5) ist bereit.",
+        confirmDel: "Diesen Eintrag wirklich löschen?", confirmLogout: "Möchten Sie sich wirklich abmelden?", 
+        updateReady: "Neue Version (v4.0) ist bereit:",
+        updateChanges: "• Nur Blutdruck-Modus\n• Monatsarchiv\n• PDF Export\n• Name im Archiv",
         btnMonthlyArchive: "Monatsarchiv"
       }
     };
@@ -327,6 +348,8 @@
       document.getElementById('info_tab_desc').innerText = t.infoTab;
 
       document.getElementById('userDisplay').innerText = window.userName ? `${t.userPrefix}: ${window.userName}` : '';
+      document.getElementById('btn_pdf').innerText = t.btnExportPdf;
+      document.getElementById('btn_close_month').innerText = t.closeBtn;
 
       document.querySelectorAll('.t-low').forEach(el => el.innerText = t.infoLow);
       document.querySelectorAll('.t-norm').forEach(el => el.innerText = t.infoNorm);
@@ -517,8 +540,7 @@
       const currentY = String(now.getFullYear()).slice(-2);
       const currentMonthKey = `${currentM}.${currentY}`;
 
-      let lastMonthKey = null;
-      let olderContentHtml = '';
+      window.groupedOlder = {}; 
       let currentMonthHtml = '';
 
       window.zaznamy.filter(r => {
@@ -533,15 +555,21 @@
         const [d, m, y] = r.datum.split('.');
         const monthKey = `${m}.${y}`;
         
-        let rowHtml = '';
-        if (monthKey !== lastMonthKey) {
-          lastMonthKey = monthKey;
-          const monthName = monthNames[window.currentLang][parseInt(m) - 1];
-          rowHtml += `<h3 style="margin: 1.2rem 0 0.5rem 0; text-align: left; padding: 0.5rem; background: var(--header); border-radius: 0.5rem; font-size: 1rem;">${monthName} 20${y}</h3>`;
-          rowHtml += '<div class="archive-header"><div>Dátum</div><div class="col-inr">INR</div><div class="col-tab">Tab</div><div>Sys</div><div>Dia</div><div>Pulz</div><div></div></div>';
+        if (monthKey !== currentMonthKey) {
+          if (!window.groupedOlder[monthKey]) {
+             const monthName = monthNames[window.currentLang][parseInt(m) - 1];
+             window.groupedOlder[monthKey] = { title: `${monthName} 20${y}`, html: '' };
+             window.groupedOlder[monthKey].html += '<div class="archive-header"><div>Dátum</div><div class="col-inr">INR</div><div class="col-tab">Tab</div><div>Sys</div><div>Dia</div><div>Pulz</div><div></div></div>';
+          }
         }
 
-        rowHtml += `<div class="record-row">
+        if (monthKey === currentMonthKey && !currentMonthHtml.includes('archive-header')) {
+          const monthName = monthNames[window.currentLang][parseInt(m) - 1];
+          currentMonthHtml += `<h3 style="margin: 1.2rem 0 0.5rem 0; text-align: left; padding: 0.5rem; background: var(--header); border-radius: 0.5rem; font-size: 1rem;">${monthName} 20${y}</h3>`;
+          currentMonthHtml += '<div class="archive-header"><div>Dátum</div><div class="col-inr">INR</div><div class="col-tab">Tab</div><div>Sys</div><div>Dia</div><div>Pulz</div><div></div></div>';
+        }
+
+        const rowHtml = `<div class="record-row">
           <div>${r.datum}</div>
           <div class="col-inr" style="${window.getColorStyle(r.inr,'inr')}">${r.inr||'-'}</div>
           <div class="col-tab">${r.tab||'-'}</div>
@@ -629,7 +657,7 @@
       });
 
       // Používame query parameter na vynútenie stiahnutia nového sw.js prehliadačom
-      navigator.serviceWorker.register('sw.js?v=3.8').then(reg => {
+      navigator.serviceWorker.register('sw.js?v=4.0').then(reg => {
         reg.update();
 
         if (reg.waiting) {
@@ -649,8 +677,9 @@
 
     window.showUpdateUI = (reg) => {
       const dialog = document.getElementById('customDialog');
+      const t = translations[window.currentLang];
       document.getElementById('dialogTitle').innerText = 'Nová verzia';
-      document.getElementById('dialogMessage').innerText = translations[window.currentLang].updateReady;
+      document.getElementById('dialogMessage').innerText = t.updateReady + '\n' + t.updateChanges;
       document.getElementById('dialogCancelBtn').style.display = 'none';
       document.getElementById('dialogOkBtn').onclick = () => {
         if (reg && reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
