@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="BP & INR" />
   <title>BP & INR</title>
-  <link rel="manifest" href="manifest.json?v=4.0" />
+  <link rel="manifest" href="manifest.json?v=4.1" />
   <link rel="icon" href="favicon.png" />
   <link rel="apple-touch-icon" href="favicon.png" />
   <style>
@@ -251,7 +251,7 @@
     </div></div>
 
     <div id="toast" style="display:none; position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background-color: #333; color: #fff; padding: 0.8rem 1.2rem; border-radius: 0.5rem; z-index: 1000;"></div>
-    <div style="position: fixed; bottom: 0.3rem; left: 0.5rem; font-size: 0.65rem; opacity: 0.4; pointer-events: none; z-index: 999;">v4.0</div>
+    <div style="position: fixed; bottom: 0.3rem; left: 0.5rem; font-size: 0.65rem; opacity: 0.4; pointer-events: none; z-index: 999;">v4.1</div>
   </div>
 
   <script type="module">
@@ -282,7 +282,7 @@
         infoTab: "Tabletka (počet tabletiek)", infoLow: "Nízky", infoNorm: "Normálny", infoHigh: "Vysoký", btnExportPdf: "Exportovať PDF",
         saved: "Uložené", msgOccupied: "Meno je už obsadené.", msgUserNotFound: "Užívateľ neexistuje.", msgWrongPin: "Nesprávny PIN kód.",
         confirmDel: "Naozaj chcete vymazať tento záznam?", confirmLogout: "Ste si istý, že sa chcete odhlásiť?", 
-        updateReady: "Nová verzia (v4.0) je pripravená:",
+        updateReady: "Nová verzia (v4.1) je pripravená:",
         updateChanges: "• Režim Iba Tlak\n• Mesačný archív\n• PDF Export\n• Meno v archíve",
         btnMonthlyArchive: "Mesačný archív"
       },
@@ -295,7 +295,7 @@
         infoTab: "Tablette (Anzahl der Tabletten)", infoLow: "Niedrig", infoNorm: "Normal", infoHigh: "Hoch", btnExportPdf: "PDF Exportieren",
         saved: "Gespeichert", msgOccupied: "Name bereits vergeben.", msgUserNotFound: "Benutzer existiert nicht.", msgWrongPin: "Falscher PIN-Code.",
         confirmDel: "Diesen Eintrag wirklich löschen?", confirmLogout: "Möchten Sie sich wirklich abmelden?", 
-        updateReady: "Neue Version (v4.0) ist bereit:",
+        updateReady: "Neue Version (v4.1) ist bereit:",
         updateChanges: "• Nur Blutdruck-Modus\n• Monatsarchiv\n• PDF Export\n• Name im Archiv",
         btnMonthlyArchive: "Monatsarchiv"
       }
@@ -582,21 +582,37 @@
         if (monthKey === currentMonthKey) {
           currentMonthHtml += rowHtml;
         } else {
-          olderContentHtml += rowHtml;
+          window.groupedOlder[monthKey].html += rowHtml;
         }
       });
 
       list.innerHTML = currentMonthHtml;
-      
-      if (olderContentHtml) {
-        list.innerHTML += `<button class="main" style="margin-top: 2rem; background-color: #666;" onclick="window.toggleOlderRecords()">${translations[window.currentLang].btnMonthlyArchive}</button>`;
-        list.innerHTML += `<div id="olderRecords" style="display: none; width: 100%;">${olderContentHtml}</div>`;
+
+      const olderKeys = Object.keys(window.groupedOlder).sort((a,b) => {
+        const [ma, ya] = a.split('.').map(Number);
+        const [mb, yb] = b.split('.').map(Number);
+        return (yb*12+mb) - (ya*12+ma);
+      });
+
+      if (olderKeys.length > 0) {
+        list.innerHTML += `<h3 style="margin: 2rem 0 0.5rem 0;">${translations[window.currentLang].btnMonthlyArchive}</h3>`;
+        olderKeys.forEach(key => {
+          list.innerHTML += `<button class="main" style="margin-top: 0.5rem; background-color: #444;" onclick="window.otvoritMesacnyDetail('${key}')">${window.groupedOlder[key].title}</button>`;
+        });
       }
     };
 
-    window.toggleOlderRecords = function() {
-      const el = document.getElementById('olderRecords');
-      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    window.otvoritMesacnyDetail = (key) => {
+      const data = window.groupedOlder[key];
+      document.getElementById('monthDetailTitle').innerText = data.title;
+      document.getElementById('monthDetailContent').innerHTML = data.html;
+      document.getElementById('monthDetailModal').style.display = 'flex';
+    };
+
+    window.zavrietMesacnyDetail = () => document.getElementById('monthDetailModal').style.display = 'none';
+
+    window.exportToPDF = () => {
+      window.print();
     };
 
     window.vymazatZaznam = (id) => {
@@ -657,7 +673,7 @@
       });
 
       // Používame query parameter na vynútenie stiahnutia nového sw.js prehliadačom
-      navigator.serviceWorker.register('sw.js?v=4.0').then(reg => {
+      navigator.serviceWorker.register('sw.js?v=4.1').then(reg => {
         reg.update();
 
         if (reg.waiting) {
