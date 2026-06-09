@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="BP & INR" />
   <title>BP & INR</title>
-  <link rel="manifest" href="manifest.json?v=4.3" />
+  <link rel="manifest" href="manifest.json?v=4.4" />
   <link rel="icon" href="favicon.png" />
   <link rel="apple-touch-icon" href="favicon.png" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -259,7 +259,7 @@
     </div></div>
 
     <div id="toast" style="display:none; position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background-color: #333; color: #fff; padding: 0.8rem 1.2rem; border-radius: 0.5rem; z-index: 1000;"></div>
-    <div style="position: fixed; bottom: 0.3rem; left: 0.5rem; font-size: 0.65rem; opacity: 0.4; pointer-events: none; z-index: 999;">v4.3</div>
+    <div style="position: fixed; bottom: 0.3rem; left: 0.5rem; font-size: 0.65rem; opacity: 0.4; pointer-events: none; z-index: 999;">v4.4</div>
   </div>
 
   <script type="module">
@@ -290,8 +290,8 @@
         infoTab: "Tabletka (počet tabletiek)", infoLow: "Nízky", infoNorm: "Normálny", infoHigh: "Vysoký", btnExportPdf: "Exportovať PDF",
         saved: "Uložené", msgOccupied: "Meno je už obsadené.", msgUserNotFound: "Užívateľ neexistuje.", msgWrongPin: "Nesprávny PIN kód.",
         confirmDel: "Naozaj chcete vymazať tento záznam?", confirmLogout: "Ste si istý, že sa chcete odhlásiť?", 
-        updateReady: "Nová verzia (v4.3) je pripravená:",
-        updateChanges: "• Priamy PDF download do mobilu\n• Formátovaná hlavička v PDF\n• Zachovanie farieb v PDF",
+        updateReady: "Nová verzia (v4.4) je pripravená:",
+        updateChanges: "• Ochrana pred ukladaním prázdnych záznamov\n• Optimalizácia stability ukladania",
         btnMonthlyArchive: "Mesačný archív"
       },
       de: {
@@ -303,8 +303,8 @@
         infoTab: "Tablette (Anzahl der Tabletten)", infoLow: "Niedrig", infoNorm: "Normal", infoHigh: "Hoch", btnExportPdf: "PDF Exportieren",
         saved: "Gespeichert", msgOccupied: "Name bereits vergeben.", msgUserNotFound: "Benutzer existiert nicht.", msgWrongPin: "Falscher PIN-Code.",
         confirmDel: "Diesen Eintrag wirklich löschen?", confirmLogout: "Möchten Sie sich wirklich abmelden?", 
-        updateReady: "Neue Version (v4.3) ist bereit:",
-        updateChanges: "• Direkt PDF Download\n• Header Formatierung im PDF\n• Farben im PDF erhalten",
+        updateReady: "Neue Version (v4.4) ist bereit:",
+        updateChanges: "• Schutz vor leeren Einträgen\n• Stabilitäts-Fixes",
         btnMonthlyArchive: "Monatsarchiv"
       }
     };
@@ -510,7 +510,7 @@
         pulse: document.getElementById('pulse').value,
         mode: window.isBpOnly ? 'bp' : 'full'
       };
-      if (!Object.values(data).some(v => v && v !== data.userId && v !== data.datum)) return;
+      if (![data.inr, data.tab, data.sys, data.dia, data.pulse].some(v => v.trim() !== '')) return;
       await addDoc(collection(db, 'zaznamy'), data);
       ['inr','tab','sys','dia','pulse'].forEach(id => document.getElementById(id).value = '');
       window.showToast(translations[window.currentLang].saved);
@@ -731,6 +731,8 @@
       }
 
       const data = { userId: window.user.uid, datum: dateStr, inr: document.getElementById('manualInr').value, tab: document.getElementById('manualTab').value, sys: document.getElementById('manualSys').value, dia: document.getElementById('manualDia').value, pulse: document.getElementById('manualPulse').value, mode: window.isBpOnly ? 'bp' : 'full' };
+      if (![data.inr, data.tab, data.sys, data.dia, data.pulse].some(v => v.trim() !== '')) return;
+
       await addDoc(collection(db, 'zaznamy'), data);
       ['manualDatum','manualInr','manualTab','manualSys','manualDia','manualPulse'].forEach(id => document.getElementById(id).value = '');
       window.zavrietModal(); window.loadRecords(); window.showToast(translations[window.currentLang].saved);
@@ -746,7 +748,7 @@
       });
 
       // Používame query parameter na vynútenie stiahnutia nového sw.js prehliadačom
-      navigator.serviceWorker.register('sw.js?v=4.3').then(reg => {
+      navigator.serviceWorker.register('sw.js?v=4.4').then(reg => {
         reg.update();
 
         if (reg.waiting) {
