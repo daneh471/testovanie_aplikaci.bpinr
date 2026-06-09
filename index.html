@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="BP & INR" />
   <title>BP & INR</title>
-  <link rel="manifest" href="manifest.json?v=4.1" />
+  <link rel="manifest" href="manifest.json?v=4.2" />
   <link rel="icon" href="favicon.png" />
   <link rel="apple-touch-icon" href="favicon.png" />
   <style>
@@ -96,8 +96,8 @@
     .tab-buttons { display: flex; gap: 0.4rem; margin-bottom: 0.6rem; width: 100%; justify-content: center; }
 
     .record-list { display: flex; flex-direction: column; width: 100%; border: 1px solid rgba(128,128,128,0.1); border-radius: 0.8rem; overflow-x: hidden; margin-top: 0.5rem; padding-bottom: 2rem; }
-    .archive-header { display: grid; grid-template-columns: 24% 12% 12% 12% 12% 12% 16%; font-weight: bold; font-size: 11px; text-transform: uppercase; background-color: var(--header); border-bottom: 2px solid rgba(0,0,0,0.1); padding: 8px 2px; text-align: center; width: 100%; box-sizing: border-box; }
-    .record-row { display: grid; grid-template-columns: 24% 12% 12% 12% 12% 12% 16%; align-items: center; background-color: var(--card); padding: 8px 1px; border-bottom: 1px solid rgba(128,128,128,0.2); width: 100%; box-sizing: border-box; font-size: 10px; text-align: center; gap: 0; }
+    .archive-header { display: grid; grid-template-columns: 32% 10% 10% 11% 11% 11% 15%; font-weight: bold; font-size: 11px; text-transform: uppercase; background-color: var(--header); border-bottom: 2px solid rgba(0,0,0,0.1); padding: 8px 2px; text-align: center; width: 100%; box-sizing: border-box; }
+    .record-row { display: grid; grid-template-columns: 32% 10% 10% 11% 11% 11% 15%; align-items: center; background-color: var(--card); padding: 8px 1px; border-bottom: 1px solid rgba(128,128,128,0.2); width: 100%; box-sizing: border-box; font-size: 10px; text-align: center; gap: 0; }
     
     /* Štýly pre režim "Iba Tlak" */
     body.bp-only #inr, body.bp-only #tab, body.bp-only #manualInr, body.bp-only #manualTab { display: none; }
@@ -187,6 +187,12 @@
       <div id="archivList" class="record-list"></div>
     </div>
 
+    <div id="monthlyArchiveListModal" class="modal"><div class="modal-content" style="max-height: 80dvh; overflow-y: auto;">
+      <h3 id="monthly_list_title">Mesačný archív</h3>
+      <div id="monthlyArchiveButtons" style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%;"></div>
+      <button class="main" onclick="window.zavrietMesacnyArchivList()" style="margin-top: 1rem; background-color: #777;">Zatvoriť</button>
+    </div></div>
+
     <div id="monthDetailModal" class="modal" style="background: var(--bg);"><div class="modal-content" style="max-width: 100%; width: 100%; height: 100%; border-radius: 0; padding: 1rem; overflow-y: auto;">
       <h2 id="monthDetailTitle" style="margin-top: env(safe-area-inset-top);"></h2>
       <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
@@ -199,7 +205,7 @@
     <div id="manualModal" class="modal"><div class="modal-content">
       <h3>Manuálny záznam</h3>
       <div class="modal-form-grid">
-        <input type="text" id="manualDatum" placeholder="Dátum (dd.mm.rr)" onclick="window.setFocused(this)" readonly autocomplete="off">
+        <input type="text" id="manualDatum" placeholder="Dátum a čas (dd.mm.rr hh:mm)" onclick="window.setFocused(this)" readonly autocomplete="off">
         <input type="text" id="manualInr" placeholder="INR" onclick="window.setFocused(this)" readonly autocomplete="off">
         <input type="text" id="manualTab" placeholder="TAB" onclick="window.setFocused(this)" readonly autocomplete="off">
         <input type="text" id="manualSys" placeholder="SYS" onclick="window.setFocused(this)" readonly autocomplete="off">
@@ -209,6 +215,7 @@
           <button onclick="window.keypadInput('1')">1</button><button onclick="window.keypadInput('2')">2</button><button onclick="window.keypadInput('3')">3</button><button onclick="window.keypadInput('CLEAR')" style="color:#f44;">C</button>
           <button onclick="window.keypadInput('4')">4</button><button onclick="window.keypadInput('5')">5</button><button onclick="window.keypadInput('6')">6</button><button onclick="window.keypadInput('DEL')" style="color:#f80;">⌫</button>
           <button onclick="window.keypadInput('7')">7</button><button onclick="window.keypadInput('8')">8</button><button onclick="window.keypadInput('9')">9</button><button onclick="window.keypadInput('/')">/</button>
+          <button onclick="window.keypadInput(' ')">_</button><button onclick="window.keypadInput('0')">0</button><button onclick="window.keypadInput(':')">:</button><button onclick="window.keypadInput('.')">.</button>
           <button onclick="window.keypadInput('.')">.</button><button onclick="window.keypadInput('0')">0</button><button onclick="window.keypadInput(',')">,</button><button onclick="window.keypadInput('-')">-</button>
         </div>
         <button class="main" onclick="window.ulozitManual()">Uložiť</button>
@@ -251,7 +258,7 @@
     </div></div>
 
     <div id="toast" style="display:none; position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background-color: #333; color: #fff; padding: 0.8rem 1.2rem; border-radius: 0.5rem; z-index: 1000;"></div>
-    <div style="position: fixed; bottom: 0.3rem; left: 0.5rem; font-size: 0.65rem; opacity: 0.4; pointer-events: none; z-index: 999;">v4.1</div>
+    <div style="position: fixed; bottom: 0.3rem; left: 0.5rem; font-size: 0.65rem; opacity: 0.4; pointer-events: none; z-index: 999;">v4.2</div>
   </div>
 
   <script type="module">
@@ -282,8 +289,8 @@
         infoTab: "Tabletka (počet tabletiek)", infoLow: "Nízky", infoNorm: "Normálny", infoHigh: "Vysoký", btnExportPdf: "Exportovať PDF",
         saved: "Uložené", msgOccupied: "Meno je už obsadené.", msgUserNotFound: "Užívateľ neexistuje.", msgWrongPin: "Nesprávny PIN kód.",
         confirmDel: "Naozaj chcete vymazať tento záznam?", confirmLogout: "Ste si istý, že sa chcete odhlásiť?", 
-        updateReady: "Nová verzia (v4.1) je pripravená:",
-        updateChanges: "• Režim Iba Tlak\n• Mesačný archív\n• PDF Export\n• Meno v archíve",
+        updateReady: "Nová verzia (v4.2) je pripravená:",
+        updateChanges: "• Režim Iba Tlak\n• Prehľadnejší mesačný archív\n• Dátum s časom (HH:mm)\n• PDF Export",
         btnMonthlyArchive: "Mesačný archív"
       },
       de: {
@@ -295,8 +302,8 @@
         infoTab: "Tablette (Anzahl der Tabletten)", infoLow: "Niedrig", infoNorm: "Normal", infoHigh: "Hoch", btnExportPdf: "PDF Exportieren",
         saved: "Gespeichert", msgOccupied: "Name bereits vergeben.", msgUserNotFound: "Benutzer existiert nicht.", msgWrongPin: "Falscher PIN-Code.",
         confirmDel: "Diesen Eintrag wirklich löschen?", confirmLogout: "Möchten Sie sich wirklich abmelden?", 
-        updateReady: "Neue Version (v4.1) ist bereit:",
-        updateChanges: "• Nur Blutdruck-Modus\n• Monatsarchiv\n• PDF Export\n• Name im Archiv",
+        updateReady: "Neue Version (v4.2) ist bereit:",
+        updateChanges: "• Nur Blutdruck-Modus\n• Besseres Monatsarchiv\n• Datum mit Uhrzeit\n• PDF Export",
         btnMonthlyArchive: "Monatsarchiv"
       }
     };
@@ -333,7 +340,7 @@
       document.querySelector('#archiv .main').innerText = t.backBtn;
       
       document.querySelector('#manualModal h3').innerText = t.titleManual;
-      document.getElementById('manualDatum').placeholder = "Dátum (dd.mm.rr)";
+      document.getElementById('manualDatum').placeholder = "Dátum a čas (dd.mm.rr hh:mm)";
       document.querySelector('#manualModal .main').innerText = t.saveBtn;
       document.querySelectorAll('#manualModal .main')[1].innerText = t.closeBtn;
 
@@ -548,25 +555,25 @@
         const recordMode = r.mode || (r.inr || r.tab ? 'full' : 'bp');
         return recordMode === (window.isBpOnly ? 'bp' : 'full');
       }).sort((a,b) => {
-        const [da, ma, ya] = a.datum.split('.').map(Number);
-        const [db, mb, yb] = b.datum.split('.').map(Number);
+        const [da, ma, ya] = a.datum.split(' ')[0].split('.').map(Number);
+        const [db, mb, yb] = b.datum.split(' ')[0].split('.').map(Number);
         return new Date(2000+yb, mb-1, db) - new Date(2000+ya, ma-1, da);
       }).forEach(r => {
-        const [d, m, y] = r.datum.split('.');
+        const [d, m, y] = r.datum.split(' ')[0].split('.');
         const monthKey = `${m}.${y}`;
         
         if (monthKey !== currentMonthKey) {
           if (!window.groupedOlder[monthKey]) {
              const monthName = monthNames[window.currentLang][parseInt(m) - 1];
              window.groupedOlder[monthKey] = { title: `${monthName} 20${y}`, html: '' };
-             window.groupedOlder[monthKey].html += '<div class="archive-header"><div>Dátum</div><div class="col-inr">INR</div><div class="col-tab">Tab</div><div>Sys</div><div>Dia</div><div>Pulz</div><div></div></div>';
+             window.groupedOlder[monthKey].html += '<div class="archive-header"><div>Dátum/Čas</div><div class="col-inr">INR</div><div class="col-tab">Tab</div><div>Sys</div><div>Dia</div><div>Pulz</div><div></div></div>';
           }
         }
 
         if (monthKey === currentMonthKey && !currentMonthHtml.includes('archive-header')) {
           const monthName = monthNames[window.currentLang][parseInt(m) - 1];
           currentMonthHtml += `<h3 style="margin: 1.2rem 0 0.5rem 0; text-align: left; padding: 0.5rem; background: var(--header); border-radius: 0.5rem; font-size: 1rem;">${monthName} 20${y}</h3>`;
-          currentMonthHtml += '<div class="archive-header"><div>Dátum</div><div class="col-inr">INR</div><div class="col-tab">Tab</div><div>Sys</div><div>Dia</div><div>Pulz</div><div></div></div>';
+          currentMonthHtml += '<div class="archive-header"><div>Dátum/Čas</div><div class="col-inr">INR</div><div class="col-tab">Tab</div><div>Sys</div><div>Dia</div><div>Pulz</div><div></div></div>';
         }
 
         const rowHtml = `<div class="record-row">
@@ -588,25 +595,33 @@
 
       list.innerHTML = currentMonthHtml;
 
+      if (Object.keys(window.groupedOlder).length > 0) {
+        list.innerHTML += `<button class="main" style="margin-top: 1.5rem; background-color: #444;" onclick="window.otvoritMesacnyArchivList()">${translations[window.currentLang].btnMonthlyArchive}</button>`;
+      }
+    };
+
+    window.otvoritMesacnyArchivList = () => {
+      const container = document.getElementById('monthlyArchiveButtons');
+      container.innerHTML = '';
       const olderKeys = Object.keys(window.groupedOlder).sort((a,b) => {
         const [ma, ya] = a.split('.').map(Number);
         const [mb, yb] = b.split('.').map(Number);
         return (yb*12+mb) - (ya*12+ma);
       });
-
-      if (olderKeys.length > 0) {
-        list.innerHTML += `<h3 style="margin: 2rem 0 0.5rem 0;">${translations[window.currentLang].btnMonthlyArchive}</h3>`;
-        olderKeys.forEach(key => {
-          list.innerHTML += `<button class="main" style="margin-top: 0.5rem; background-color: #444;" onclick="window.otvoritMesacnyDetail('${key}')">${window.groupedOlder[key].title}</button>`;
-        });
-      }
+      olderKeys.forEach(key => {
+        container.innerHTML += `<button class="main" style="background-color: #555;" onclick="window.otvoritMesacnyDetail('${key}')">${window.groupedOlder[key].title}</button>`;
+      });
+      document.getElementById('monthlyArchiveListModal').style.display = 'flex';
     };
+
+    window.zavrietMesacnyArchivList = () => document.getElementById('monthlyArchiveListModal').style.display = 'none';
 
     window.otvoritMesacnyDetail = (key) => {
       const data = window.groupedOlder[key];
       document.getElementById('monthDetailTitle').innerText = data.title;
       document.getElementById('monthDetailContent').innerHTML = data.html;
       document.getElementById('monthDetailModal').style.display = 'flex';
+      window.zavrietMesacnyArchivList();
     };
 
     window.zavrietMesacnyDetail = () => document.getElementById('monthDetailModal').style.display = 'none';
@@ -623,7 +638,12 @@
       });
     };
 
-    window.formatDatum = () => { const d = new Date(); return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getFullYear()).slice(-2)}`; };
+    window.formatDatum = () => { 
+      const d = new Date(); 
+      const date = `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getFullYear()).slice(-2)}`;
+      const time = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+      return `${date} ${time}`;
+    };
     window.skrytArchiv = () => { document.getElementById('archiv').style.display = 'none'; document.getElementById('formular').style.display = 'block'; };
     
     window.logout = () => {
@@ -643,18 +663,20 @@
     
     window.ulozitManual = async () => {
       const dateStr = document.getElementById('manualDatum').value;
-      const datePattern = /^(\d{2})\.(\d{2})\.(\d{2})$/;
+      const datePattern = /^(\d{2})\.(\d{2})\.(\d{2}) (\d{2}):(\d{2})$/;
       const match = dateStr.match(datePattern);
 
       if (!match) {
-        return window.showAlert('Dátum musí byť v tvare dd.mm.rr (napr. 25.12.26)');
+        return window.showAlert('Dátum a čas musí byť v tvare dd.mm.rr hh:mm (napr. 25.12.24 14:30)');
       }
 
       const day = parseInt(match[1]);
       const month = parseInt(match[2]);
+      const hour = parseInt(match[4]);
+      const min = parseInt(match[5]);
 
-      if (day < 1 || day > 31 || month < 1 || month > 12) {
-        return window.showAlert('Neplatný deň (01-31) alebo mesiac (01-12)!');
+      if (day < 1 || day > 31 || month < 1 || month > 12 || hour > 23 || min > 59) {
+        return window.showAlert('Neplatné údaje v dátume alebo čase!');
       }
 
       const data = { userId: window.user.uid, datum: dateStr, inr: document.getElementById('manualInr').value, tab: document.getElementById('manualTab').value, sys: document.getElementById('manualSys').value, dia: document.getElementById('manualDia').value, pulse: document.getElementById('manualPulse').value, mode: window.isBpOnly ? 'bp' : 'full' };
@@ -673,7 +695,7 @@
       });
 
       // Používame query parameter na vynútenie stiahnutia nového sw.js prehliadačom
-      navigator.serviceWorker.register('sw.js?v=4.1').then(reg => {
+      navigator.serviceWorker.register('sw.js?v=4.2').then(reg => {
         reg.update();
 
         if (reg.waiting) {
