@@ -154,7 +154,6 @@
         <button onclick="window.zobrazArchiv(); window.toggleDropdown();">📄 Archív</button>
         <button onclick="window.otvoritModal(); window.toggleDropdown();">➕ Manuálny záznam</button>
         <button onclick="window.otvoritInfo(); window.toggleDropdown();">ℹ️ Informácie</button>
-        <button onclick="window.otvoritRady(); window.toggleDropdown();" id="menu_rady">💡 Rady</button>
         <button onclick="window.otvoritNastavenia(); window.toggleDropdown();">⚙️ Nastavenia</button>
         <button id="toggleBtn" onclick="window.toggleViewMode(); window.toggleDropdown();"></button>
         <button onclick="window.logout(); window.toggleDropdown();">🚪 Odhlásiť sa</button>
@@ -175,6 +174,7 @@
 
     <div id="archiv" style="display:none; width: 100%;">
       <h2>Archív záznamov</h2>
+      <div id="userDisplay" style="margin-bottom: 0.8rem; font-weight: bold; opacity: 0.8; font-size: 0.9rem;"></div>
       <button class="main" onclick="window.skrytArchiv()">Späť na formulár</button>
       <div id="archivList" class="record-list"></div>
     </div>
@@ -224,13 +224,6 @@
       <button class="main" onclick="window.zavrietInfo()">Zatvoriť</button>
     </div></div>
 
-    <div id="radyModal" class="modal"><div class="modal-content" style="max-height: 85dvh; overflow-y: auto; display: block;">
-      <h3 id="rady_title" style="text-align: center;">Rady</h3>
-      <div id="rady_content" style="font-size: 0.9rem; line-height: 1.4; text-align: left;">
-      </div>
-      <button class="main" id="rady_close" onclick="window.zavrietRady()" style="margin-top: 1rem;">Zatvoriť</button>
-    </div></div>
-
     <div id="customDialog" class="modal"><div class="modal-content">
       <h3 id="dialogTitle">BP & INR</h3>
       <p id="dialogMessage"></p>
@@ -266,40 +259,24 @@
       sk: {
         login: "Prihlásiť sa", register: "Registrácia", titleLogin: "Prihlásenie", titleReg: "Nový účet", namePh: "Tvoje meno", pinPh: "PIN (4-6 číslic)", 
         pinConfPh: "Zopakuj PIN", createBtn: "Vytvoriť účet", menuArchive: "📄 Archív", menuManual: "➕ Manuálny záznam", menuInfo: "ℹ️ Informácie", 
-        menuRady: "💡 Rady", menuSettings: "⚙️ Nastavenia", menuLogout: "🚪 Odhlásiť sa", addBtn: "Pridať záznam", backBtn: "Späť na formulár", saveBtn: "Uložiť", 
+        menuSettings: "⚙️ Nastavenia", menuLogout: "🚪 Odhlásiť sa", addBtn: "Pridať záznam", backBtn: "Späť na formulár", saveBtn: "Uložiť", 
         closeBtn: "Zatvoriť", titleArchive: "Archív záznamov", titleManual: "Manuálny záznam", titleInfo: "Informácie o hodnotách", titleSettings: "Nastavenia",
-        menuLang: "Jazyk", selectLang: "Vybrať jazyk", menuToggleBp: "Prepnúť na: Iba Tlak", menuToggleFull: "Prepnúť na: INR + Tlak",
+        menuLang: "Jazyk", selectLang: "Vybrať jazyk", menuToggleBp: "Prepnúť na: Iba Tlak", menuToggleFull: "Prepnúť na: INR + Tlak", userPrefix: "Používateľ",
         infoTab: "Tabletka (počet tabletiek)", infoLow: "Nízky", infoNorm: "Normálny", infoHigh: "Vysoký",
         saved: "Uložené", msgOccupied: "Meno je už obsadené.", msgUserNotFound: "Užívateľ neexistuje.", msgWrongPin: "Nesprávny PIN kód.",
         confirmDel: "Naozaj chcete vymazať tento záznam?", confirmLogout: "Ste si istý, že sa chcete odhlásiť?", updateReady: "Aktualizácia (v3.5) je pripravená.",
-        btnMonthlyArchive: "Mesačný archív",
-        radyTitle: "Rady",
-        radyText: `<strong>📉 Nízky tlak (Hypotenzia)</strong><br>Prejav: točenie hlavy, únava.<br><br>
-        <strong>Čo vypiť:</strong><br>• Čistá voda / minerálka<br>• Káva, čierny/zelený čaj (kofeín)<br>• Rozmarínový čaj<br><br>
-        <strong>Čo zjesť:</strong><br>• Niečo slané (syr, oriešky)<br>• Sladké drievko (pendrek)<br>• Vitamín B12 (vajíčka, mäso)<br><br>
-        <strong>Rýchla pomoc:</strong> Vypite pohár vody, dajte si niečo slané a vyložte nohy hore.<br><hr>
-        <strong>📈 Vysoký tlak (Hypertenzia)</strong><br>Prejav: tlak v hlave, napätie.<br><br>
-        <strong>Čo vypiť:</strong><br>• Ibištekový čaj<br>• Cviklová / granátová šťava<br>• Voda (nízkosodíková)<br><br>
-        <strong>Čo zjesť:</strong><br>• Draslík (Banány, avokádo, zemiaky)<br>• Cesnak (surový)<br>• Tmavá čokoláda (70%+)<br>• Bobuľové ovocie`
+        btnMonthlyArchive: "Mesačný archív"
       },
       de: {
         login: "Anmelden", register: "Registrierung", titleLogin: "Login", titleReg: "Neues Konto", namePh: "Dein Name", pinPh: "PIN (4-6 Stellen)", 
         pinConfPh: "PIN wiederholen", createBtn: "Konto erstellen", menuArchive: "📄 Archiv", menuManual: "➕ Manueller Eintrag", menuInfo: "ℹ️ Informationen", 
-        menuRady: "💡 Tipps", menuSettings: "⚙️ Einstellungen", menuLogout: "🚪 Abmelden", addBtn: "Eintrag hinzufügen", backBtn: "Zurück zum Formular", saveBtn: "Speichern", 
+        menuSettings: "⚙️ Einstellungen", menuLogout: "🚪 Abmelden", addBtn: "Eintrag hinzufügen", backBtn: "Zurück zum Formular", saveBtn: "Speichern", 
         closeBtn: "Schließen", titleArchive: "Eintragshistorie", titleManual: "Manueller Eintrag", titleInfo: "Informationen zu Werten", titleSettings: "Einstellungen",
-        menuLang: "Sprache", selectLang: "Sprache wählen", menuToggleBp: "Nur Blutdruck", menuToggleFull: "INR + Blutdruck",
+        menuLang: "Sprache", selectLang: "Sprache wählen", menuToggleBp: "Nur Blutdruck", menuToggleFull: "INR + Blutdruck", userPrefix: "Benutzer",
         infoTab: "Tablette (Anzahl der Tabletten)", infoLow: "Niedrig", infoNorm: "Normal", infoHigh: "Hoch",
         saved: "Gespeichert", msgOccupied: "Name bereits vergeben.", msgUserNotFound: "Benutzer existiert nicht.", msgWrongPin: "Falscher PIN-Code.",
         confirmDel: "Diesen Eintrag wirklich löschen?", confirmLogout: "Möchten Sie sich wirklich abmelden?", updateReady: "Update (v3.5) ist bereit.",
-        btnMonthlyArchive: "Monatsarchiv",
-        radyTitle: "Tipps",
-        radyText: `<strong>📉 Niedriger Blutdruck</strong><br>Symptome: Schwindel, Müdigkeit.<br><br>
-        <strong>Trinken:</strong><br>• Wasser / Mineralwasser<br>• Kaffee, schwarzer/grüner Tee<br>• Rosmarintee<br><br>
-        <strong>Essen:</strong><br>• Salziges (Käse, Nüsse)<br>• Lakritz<br>• Vitamin B12 (Eier, Fleisch)<br><br>
-        <strong>Schnelle Hilfe:</strong> Ein Glas Wasser trinken, etwas Salziges essen und Beine hochlagern.<br><hr>
-        <strong>📈 Hoher Blutdruck</strong><br>Symptome: Kopfdruck, Anspannung.<br><br>
-        <strong>Trinken:</strong><br>• Hibiskustee<br>• Rote Bete / Granatapfelsaft<br>• Wasser (natriumarm)<br><br>
-        <strong>Essen:</strong><br>• Kalium (Bananen, Avocado, Kartoffeln)<br>• Knoblauch (roh)<br>• Dunkle Schokolade (70%+)<br>• Beerenfrüchte`
+        btnMonthlyArchive: "Monatsarchiv"
       }
     };
 
@@ -326,10 +303,9 @@
       menuBtns[0].innerText = t.menuArchive;
       menuBtns[1].innerText = t.menuManual;
       menuBtns[2].innerText = t.menuInfo;
-      document.getElementById('menu_rady').innerText = t.menuRady;
-      menuBtns[4].innerText = t.menuSettings;
+      menuBtns[3].innerText = t.menuSettings;
       document.getElementById('toggleBtn').innerText = window.isBpOnly ? t.menuToggleFull : t.menuToggleBp;
-      menuBtns[6].innerText = t.menuLogout;
+      menuBtns[5].innerText = t.menuLogout;
 
       document.querySelector('#formular .main').innerText = t.addBtn;
       document.querySelector('#archiv h2').innerText = t.titleArchive;
@@ -350,10 +326,8 @@
       document.querySelector('#infoModal .main').innerText = t.closeBtn;
       document.getElementById('info_tab_desc').innerText = t.infoTab;
 
-      document.getElementById('rady_title').innerText = t.radyTitle;
-      document.getElementById('rady_content').innerHTML = t.radyText;
-      document.getElementById('rady_close').innerText = t.closeBtn;
-      
+      document.getElementById('userDisplay').innerText = window.userName ? `${t.userPrefix}: ${window.userName}` : '';
+
       document.querySelectorAll('.t-low').forEach(el => el.innerText = t.infoLow);
       document.querySelectorAll('.t-norm').forEach(el => el.innerText = t.infoNorm);
       document.querySelectorAll('.t-high').forEach(el => el.innerText = t.infoHigh);
@@ -384,9 +358,6 @@
     window.zavrietNastavenia = () => document.getElementById('settingsModal').style.display = 'none';
     window.otvoritJazyk = () => { document.getElementById('settingsModal').style.display = 'none'; document.getElementById('languageModal').style.display = 'flex'; };
     window.zavrietJazyk = () => { document.getElementById('languageModal').style.display = 'none'; document.getElementById('settingsModal').style.display = 'flex'; };
-
-    window.otvoritRady = () => document.getElementById('radyModal').style.display = 'flex';
-    window.zavrietRady = () => document.getElementById('radyModal').style.display = 'none';
 
     // Vlastné funkcie pre dialógy namiesto systémových
     window.showAlert = (msg) => {
@@ -463,6 +434,13 @@
       setTimeout(() => document.getElementById('splashScreen').style.display = 'none', 500);
       if (user) {
         window.user = user;
+        // Fetch name from Firestore
+        getDocs(query(collection(db, 'users'), where('uid', '==', user.uid))).then(snap => {
+          if (!snap.empty) {
+            window.userName = snap.docs[0].data().name;
+            window.updateUI();
+          }
+        });
         document.getElementById('authScreen').style.display = 'none';
         document.querySelector('header').style.display = 'grid';
         document.getElementById('formular').style.display = 'block';
@@ -470,6 +448,7 @@
         window.updateUI();
       } else {
         window.user = null; 
+        window.userName = null;
         document.getElementById('authScreen').style.display = 'flex';
         document.querySelector('header').style.display = 'none';
         document.getElementById('formular').style.display = 'none';
