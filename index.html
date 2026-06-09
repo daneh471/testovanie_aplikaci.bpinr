@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="BP & INR" />
   <title>BP & INR</title>
-  <link rel="manifest" href="manifest.json?v=3.5" />
+  <link rel="manifest" href="manifest.json?v=3.7" />
   <link rel="icon" href="favicon.png" />
   <link rel="apple-touch-icon" href="favicon.png" />
   <style>
@@ -98,6 +98,11 @@
     .record-list { display: flex; flex-direction: column; width: 100%; border: 1px solid rgba(128,128,128,0.1); border-radius: 0.8rem; overflow-x: hidden; margin-top: 0.5rem; padding-bottom: 2rem; }
     .archive-header { display: grid; grid-template-columns: 24% 12% 12% 12% 12% 12% 16%; font-weight: bold; font-size: 11px; text-transform: uppercase; background-color: var(--header); border-bottom: 2px solid rgba(0,0,0,0.1); padding: 8px 2px; text-align: center; width: 100%; box-sizing: border-box; }
     .record-row { display: grid; grid-template-columns: 24% 12% 12% 12% 12% 12% 16%; align-items: center; background-color: var(--card); padding: 8px 1px; border-bottom: 1px solid rgba(128,128,128,0.2); width: 100%; box-sizing: border-box; font-size: 10px; text-align: center; gap: 0; }
+    
+    /* Štýly pre režim "Iba Tlak" */
+    body.bp-only #inr, body.bp-only #tab { display: none; }
+    body.bp-only .archive-header, body.bp-only .record-row { grid-template-columns: 35% 15% 15% 15% 20%; }
+    body.bp-only .col-inr, body.bp-only .col-tab { display: none; }
 
     .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; padding: 1rem; }
     .modal-content { background-color: var(--card); padding: 1rem; border-radius: 1.5rem; width: 100%; max-width: 380px; max-height: 98dvh; overflow: hidden; display: flex; flex-direction: column; text-align: left; box-sizing: border-box; }
@@ -151,6 +156,7 @@
         <button onclick="window.otvoritInfo(); window.toggleDropdown();">ℹ️ Informácie</button>
         <button onclick="window.otvoritRady(); window.toggleDropdown();" id="menu_rady">💡 Rady</button>
         <button onclick="window.otvoritNastavenia(); window.toggleDropdown();">⚙️ Nastavenia</button>
+        <button id="toggleBtn" onclick="window.toggleViewMode(); window.toggleDropdown();"></button>
         <button onclick="window.logout(); window.toggleDropdown();">🚪 Odhlásiť sa</button>
       </div>
     </header>
@@ -235,7 +241,7 @@
     </div></div>
 
     <div id="toast" style="display:none; position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background-color: #333; color: #fff; padding: 0.8rem 1.2rem; border-radius: 0.5rem; z-index: 1000;"></div>
-    <div style="position: fixed; bottom: 0.3rem; left: 0.5rem; font-size: 0.65rem; opacity: 0.4; pointer-events: none; z-index: 999;">v3.5</div>
+    <div style="position: fixed; bottom: 0.3rem; left: 0.5rem; font-size: 0.65rem; opacity: 0.4; pointer-events: none; z-index: 999;">v3.7</div>
   </div>
 
   <script type="module">
@@ -262,7 +268,8 @@
         pinConfPh: "Zopakuj PIN", createBtn: "Vytvoriť účet", menuArchive: "📄 Archív", menuManual: "➕ Manuálny záznam", menuInfo: "ℹ️ Informácie", 
         menuRady: "💡 Rady", menuSettings: "⚙️ Nastavenia", menuLogout: "🚪 Odhlásiť sa", addBtn: "Pridať záznam", backBtn: "Späť na formulár", saveBtn: "Uložiť", 
         closeBtn: "Zatvoriť", titleArchive: "Archív záznamov", titleManual: "Manuálny záznam", titleInfo: "Informácie o hodnotách", titleSettings: "Nastavenia",
-        menuLang: "Jazyk", selectLang: "Vybrať jazyk", infoTab: "Tabletka (počet tabletiek)", infoLow: "Nízky", infoNorm: "Normálny", infoHigh: "Vysoký",
+        menuLang: "Jazyk", selectLang: "Vybrať jazyk", menuToggleBp: "Prepnúť na: Iba Tlak", menuToggleFull: "Prepnúť na: INR + Tlak",
+        infoTab: "Tabletka (počet tabletiek)", infoLow: "Nízky", infoNorm: "Normálny", infoHigh: "Vysoký",
         saved: "Uložené", msgOccupied: "Meno je už obsadené.", msgUserNotFound: "Užívateľ neexistuje.", msgWrongPin: "Nesprávny PIN kód.",
         confirmDel: "Naozaj chcete vymazať tento záznam?", confirmLogout: "Ste si istý, že sa chcete odhlásiť?", updateReady: "Aktualizácia (v3.5) je pripravená.",
         btnMonthlyArchive: "Mesačný archív",
@@ -280,7 +287,8 @@
         pinConfPh: "PIN wiederholen", createBtn: "Konto erstellen", menuArchive: "📄 Archiv", menuManual: "➕ Manueller Eintrag", menuInfo: "ℹ️ Informationen", 
         menuRady: "💡 Tipps", menuSettings: "⚙️ Einstellungen", menuLogout: "🚪 Abmelden", addBtn: "Eintrag hinzufügen", backBtn: "Zurück zum Formular", saveBtn: "Speichern", 
         closeBtn: "Schließen", titleArchive: "Eintragshistorie", titleManual: "Manueller Eintrag", titleInfo: "Informationen zu Werten", titleSettings: "Einstellungen",
-        menuLang: "Sprache", selectLang: "Sprache wählen", infoTab: "Tablette (Anzahl der Tabletten)", infoLow: "Niedrig", infoNorm: "Normal", infoHigh: "Hoch",
+        menuLang: "Sprache", selectLang: "Sprache wählen", menuToggleBp: "Nur Blutdruck", menuToggleFull: "INR + Blutdruck",
+        infoTab: "Tablette (Anzahl der Tabletten)", infoLow: "Niedrig", infoNorm: "Normal", infoHigh: "Hoch",
         saved: "Gespeichert", msgOccupied: "Name bereits vergeben.", msgUserNotFound: "Benutzer existiert nicht.", msgWrongPin: "Falscher PIN-Code.",
         confirmDel: "Diesen Eintrag wirklich löschen?", confirmLogout: "Möchten Sie sich wirklich abmelden?", updateReady: "Update (v3.5) ist bereit.",
         btnMonthlyArchive: "Monatsarchiv",
@@ -295,8 +303,11 @@
       }
     };
 
+    window.isBpOnly = localStorage.getItem('zdravie_bp_only') === 'true';
     window.currentLang = localStorage.getItem('zdravie_lang') || 'sk';
-
+    
+    if (window.isBpOnly) document.body.classList.add('bp-only');
+    
     window.updateUI = () => {
       const t = translations[window.currentLang];
       document.querySelectorAll('.tab-buttons .secondary')[0].innerText = t.login;
@@ -317,7 +328,8 @@
       menuBtns[2].innerText = t.menuInfo;
       document.getElementById('menu_rady').innerText = t.menuRady;
       menuBtns[4].innerText = t.menuSettings;
-      menuBtns[5].innerText = t.menuLogout;
+      document.getElementById('toggleBtn').innerText = window.isBpOnly ? t.menuToggleFull : t.menuToggleBp;
+      menuBtns[6].innerText = t.menuLogout;
 
       document.querySelector('#formular .main').innerText = t.addBtn;
       document.querySelector('#archiv h2').innerText = t.titleArchive;
@@ -358,6 +370,14 @@
       localStorage.setItem('zdravie_lang', lang);
       window.updateUI();
       window.zavrietJazyk();
+    };
+
+    window.toggleViewMode = () => {
+      window.isBpOnly = !window.isBpOnly;
+      localStorage.setItem('zdravie_bp_only', window.isBpOnly);
+      document.body.classList.toggle('bp-only', window.isBpOnly);
+      window.updateUI();
+      if (document.getElementById('archiv').style.display === 'block') window.zobrazArchiv();
     };
 
     window.otvoritNastavenia = () => document.getElementById('settingsModal').style.display = 'flex';
@@ -534,15 +554,15 @@
           lastMonthKey = monthKey;
           const monthName = monthNames[window.currentLang][parseInt(m) - 1];
           rowHtml += `<h3 style="margin: 1.2rem 0 0.5rem 0; text-align: left; padding: 0.5rem; background: var(--header); border-radius: 0.5rem; font-size: 1rem;">${monthName} 20${y}</h3>`;
-          rowHtml += '<div class="archive-header"><div>Dátum</div><div>INR</div><div>Tab</div><div>Sys</div><div>Dia</div><div>Pulz</div><div></div></div>';
+          rowHtml += '<div class="archive-header"><div>Dátum</div><div class="col-inr">INR</div><div class="col-tab">Tab</div><div>Sys</div><div>Dia</div><div>Pulz</div><div></div></div>';
         }
 
         rowHtml += `<div class="record-row">
           <div>${r.datum}</div>
-          <div style="${window.getColorStyle(r.inr,'inr')}">${r.inr||'-'}</div>
-          <div>${r.tab||'-'}</div>
-          <div style="${window.getColorStyle(r.sys,'sys')}">${r.sys||'-'}</div>
-          <div style="${window.getColorStyle(r.dia,'dia')}">${r.dia||'-'}</div>
+          <div class="col-inr" style="${window.getColorStyle(r.inr,'inr')}">${r.inr||'-'}</div>
+          <div class="col-tab">${r.tab||'-'}</div>
+          <div class="col-sys" style="${window.getColorStyle(r.sys,'sys')}">${r.sys||'-'}</div>
+          <div class="col-dia" style="${window.getColorStyle(r.dia,'dia')}">${r.dia||'-'}</div>
           <div style="${window.getColorStyle(r.pulse,'pulse')}">${r.pulse||'-'}</div>
           <div onclick="window.vymazatZaznam('${r.id}')">🗑️</div>
         </div>`;
@@ -625,7 +645,7 @@
       });
 
       // Používame query parameter na vynútenie stiahnutia nového sw.js prehliadačom
-      navigator.serviceWorker.register('sw.js?v=3.5').then(reg => {
+      navigator.serviceWorker.register('sw.js?v=3.7').then(reg => {
         reg.update();
 
         if (reg.waiting) {
