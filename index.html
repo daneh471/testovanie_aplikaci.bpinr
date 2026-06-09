@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="BP & INR" />
   <title>BP & INR</title>
-  <link rel="manifest" href="manifest.json?v=4.4" />
+  <link rel="manifest" href="manifest.json?v=1.01" />
   <link rel="icon" href="favicon.png" />
   <link rel="apple-touch-icon" href="favicon.png" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -259,7 +259,7 @@
     </div></div>
 
     <div id="toast" style="display:none; position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background-color: #333; color: #fff; padding: 0.8rem 1.2rem; border-radius: 0.5rem; z-index: 1000;"></div>
-    <div style="position: fixed; bottom: 0.3rem; left: 0.5rem; font-size: 0.65rem; opacity: 0.4; pointer-events: none; z-index: 999;">v4.4</div>
+    <div style="position: fixed; bottom: 0.3rem; left: 0.5rem; font-size: 0.65rem; opacity: 0.4; pointer-events: none; z-index: 999;">v1.01</div>
   </div>
 
   <script type="module">
@@ -290,7 +290,7 @@
         infoTab: "Tabletka (počet tabletiek)", infoLow: "Nízky", infoNorm: "Normálny", infoHigh: "Vysoký", btnExportPdf: "Exportovať PDF",
         saved: "Uložené", msgOccupied: "Meno je už obsadené.", msgUserNotFound: "Užívateľ neexistuje.", msgWrongPin: "Nesprávny PIN kód.",
         confirmDel: "Naozaj chcete vymazať tento záznam?", confirmLogout: "Ste si istý, že sa chcete odhlásiť?", 
-        updateReady: "Nová verzia (v4.4) je pripravená:",
+        updateReady: "Nová verzia (v1.01) je pripravená:",
         updateChanges: "• Ochrana pred ukladaním prázdnych záznamov\n• Optimalizácia stability ukladania",
         btnMonthlyArchive: "Mesačný archív"
       },
@@ -303,7 +303,7 @@
         infoTab: "Tablette (Anzahl der Tabletten)", infoLow: "Niedrig", infoNorm: "Normal", infoHigh: "Hoch", btnExportPdf: "PDF Exportieren",
         saved: "Gespeichert", msgOccupied: "Name bereits vergeben.", msgUserNotFound: "Benutzer existiert nicht.", msgWrongPin: "Falscher PIN-Code.",
         confirmDel: "Diesen Eintrag wirklich löschen?", confirmLogout: "Möchten Sie sich wirklich abmelden?", 
-        updateReady: "Neue Version (v4.4) ist bereit:",
+        updateReady: "Neue Version (v1.01) ist bereit:",
         updateChanges: "• Schutz vor leeren Einträgen\n• Stabilitäts-Fixes",
         btnMonthlyArchive: "Monatsarchiv"
       }
@@ -748,7 +748,7 @@
       });
 
       // Používame query parameter na vynútenie stiahnutia nového sw.js prehliadačom
-      navigator.serviceWorker.register('sw.js?v=4.4').then(reg => {
+      navigator.serviceWorker.register('sw.js?v=1.01').then(reg => {
         reg.update();
 
         if (reg.waiting) {
@@ -781,3 +781,4 @@
   </script>
 </body>
 </html>
+
