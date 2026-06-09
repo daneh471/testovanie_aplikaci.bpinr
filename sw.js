@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bp-inr-cache-v4.3';
+const CACHE_NAME = 'bp-inr-cache-v4.4';
 const FILES_TO_CACHE = [
   './index.html',
   './favicon.png',
