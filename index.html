@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="BP & INR" />
   <title>BP & INR</title>
-  <link rel="manifest" href="manifest.json?v=3.7" />
+  <link rel="manifest" href="manifest.json?v=3.8" />
   <link rel="icon" href="favicon.png" />
   <link rel="apple-touch-icon" href="favicon.png" />
   <style>
@@ -100,7 +100,7 @@
     .record-row { display: grid; grid-template-columns: 24% 12% 12% 12% 12% 12% 16%; align-items: center; background-color: var(--card); padding: 8px 1px; border-bottom: 1px solid rgba(128,128,128,0.2); width: 100%; box-sizing: border-box; font-size: 10px; text-align: center; gap: 0; }
     
     /* Štýly pre režim "Iba Tlak" */
-    body.bp-only #inr, body.bp-only #tab { display: none; }
+    body.bp-only #inr, body.bp-only #tab, body.bp-only #manualInr, body.bp-only #manualTab { display: none; }
     body.bp-only .archive-header, body.bp-only .record-row { grid-template-columns: 35% 15% 15% 15% 20%; }
     body.bp-only .col-inr, body.bp-only .col-tab { display: none; }
 
@@ -241,7 +241,7 @@
     </div></div>
 
     <div id="toast" style="display:none; position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background-color: #333; color: #fff; padding: 0.8rem 1.2rem; border-radius: 0.5rem; z-index: 1000;"></div>
-    <div style="position: fixed; bottom: 0.3rem; left: 0.5rem; font-size: 0.65rem; opacity: 0.4; pointer-events: none; z-index: 999;">v3.7</div>
+    <div style="position: fixed; bottom: 0.3rem; left: 0.5rem; font-size: 0.65rem; opacity: 0.4; pointer-events: none; z-index: 999;">v3.8</div>
   </div>
 
   <script type="module">
@@ -497,7 +497,8 @@
         tab: document.getElementById('tab').value,
         sys: document.getElementById('sys').value,
         dia: document.getElementById('dia').value,
-        pulse: document.getElementById('pulse').value
+        pulse: document.getElementById('pulse').value,
+        mode: window.isBpOnly ? 'bp' : 'full'
       };
       if (!Object.values(data).some(v => v && v !== data.userId && v !== data.datum)) return;
       await addDoc(collection(db, 'zaznamy'), data);
@@ -541,7 +542,11 @@
       let olderContentHtml = '';
       let currentMonthHtml = '';
 
-      window.zaznamy.sort((a,b) => {
+      window.zaznamy.filter(r => {
+        // Filtrovanie: ak záznam nemá mode (staré záznamy), určíme ho podľa prítomnosti INR
+        const recordMode = r.mode || (r.inr || r.tab ? 'full' : 'bp');
+        return recordMode === (window.isBpOnly ? 'bp' : 'full');
+      }).sort((a,b) => {
         const [da, ma, ya] = a.datum.split('.').map(Number);
         const [db, mb, yb] = b.datum.split('.').map(Number);
         return new Date(2000+yb, mb-1, db) - new Date(2000+ya, ma-1, da);
@@ -629,7 +634,7 @@
         return window.showAlert('Neplatný deň (01-31) alebo mesiac (01-12)!');
       }
 
-      const data = { userId: window.user.uid, datum: dateStr, inr: document.getElementById('manualInr').value, tab: document.getElementById('manualTab').value, sys: document.getElementById('manualSys').value, dia: document.getElementById('manualDia').value, pulse: document.getElementById('manualPulse').value };
+      const data = { userId: window.user.uid, datum: dateStr, inr: document.getElementById('manualInr').value, tab: document.getElementById('manualTab').value, sys: document.getElementById('manualSys').value, dia: document.getElementById('manualDia').value, pulse: document.getElementById('manualPulse').value, mode: window.isBpOnly ? 'bp' : 'full' };
       await addDoc(collection(db, 'zaznamy'), data);
       ['manualDatum','manualInr','manualTab','manualSys','manualDia','manualPulse'].forEach(id => document.getElementById(id).value = '');
       window.zavrietModal(); window.loadRecords(); window.showToast(translations[window.currentLang].saved);
@@ -645,7 +650,7 @@
       });
 
       // Používame query parameter na vynútenie stiahnutia nového sw.js prehliadačom
-      navigator.serviceWorker.register('sw.js?v=3.7').then(reg => {
+      navigator.serviceWorker.register('sw.js?v=3.8').then(reg => {
         reg.update();
 
         if (reg.waiting) {
